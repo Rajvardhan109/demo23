@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backend & AI Engine — AI-Based Smart Study Recommendation System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="brand" href="index.html"><b>Smart Study AI</b></a>
+    <div class="tabs">
+      <a href="index.html">Home</a>
+      <a href="frontend.html">Frontend</a>
+      <a href="backend.html">Backend</a>
+      <a href="database.html">Database</a>
+      <a href="roadmap.html">Roadmap</a>
+      <a href="team.html">Team</a>
+    </div>
+  </div>
+</nav>
+
+<header class="page-hero">
+  <span class="layer-badge">Layer 2 · Server + AI/ML</span>
+  <h1>Where the <em>ranking</em> actually happens.</h1>
+  <p>A REST API layer plus a hybrid recommendation engine: content-based filtering, collaborative filtering, quality scoring, and an NLP search module, all sitting between the frontend and the database.</p>
+</header>
+
+<section class="reveal">
+  <div class="divider"><span class="idx">API endpoints</span><span class="rule"></span></div>
+  <h2 style="font-size:1.7rem;">REST API — existing and new</h2>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Endpoint</th><th>Purpose</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="method">POST /register</td><td>Create a new student account.</td><td></td></tr>
+        <tr><td class="method">POST /login</td><td>Authenticate and start a session.</td><td></td></tr>
+        <tr><td class="method">POST /upload-note</td><td>Store a note with subject, unit, title, and description metadata.</td><td></td></tr>
+        <tr><td class="method">GET /get-notes</td><td>Fetch notes by subject, unit, or keyword.</td><td></td></tr>
+        <tr class="new"><td class="method">GET /recommend</td><td>Return a ranked list of notes from the hybrid recommendation model for the logged-in student.</td><td></td></tr>
+        <tr class="new"><td class="method">POST /rate</td><td>Submit a rating that updates both the note's quality score and the collaborative filtering matrix.</td><td></td></tr>
+        <tr class="new"><td class="method">GET /search-nlp</td><td>Accept a natural-language query and return semantically matched notes via sentence-BERT.</td><td></td></tr>
+        <tr class="new"><td class="method">GET /study-path</td><td>Return an ordered sequence of units based on syllabus structure and peer progression.</td><td></td></tr>
+        <tr class="new"><td class="method">GET /gap-alert</td><td>Return subjects or units the student hasn't accessed recently, for the nudge banner.</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="divider"><span class="idx">AI / ML engine</span><span class="rule"></span></div>
+  <h2 style="font-size:1.7rem;">Three models, blended into one ranking</h2>
+  <div class="phase-row">
+    <div class="phase"><div class="label">Phase 1</div><div><h3>Content-based filtering</h3><p>TF-IDF and sentence embeddings run on note metadata to compute similarity vectors between notes — recommends by "what this note is about."</p></div></div>
+    <div class="phase"><div class="label">Phase 2</div><div><h3>Collaborative filtering</h3><p>Matrix factorization (SVD / ALS) applied to the user–note interaction matrix — recommends by "what similar students found useful."</p></div></div>
+    <div class="phase"><div class="label">Phase 3</div><div><h3>Hybrid model</h3><p>A weighted ensemble of both signals, tuned per user cohort, is what actually serves <code>/recommend</code>.</p></div></div>
+    <div class="phase"><div class="label">NLP search</div><div><h3>Semantic search</h3><p>A fine-tuned BERT / sentence-transformers model powers <code>/search-nlp</code>, matching intent rather than exact words.</p></div></div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="divider"><span class="idx">Request flow</span><span class="rule"></span></div>
+  <div class="dark-panel">
+    <div class="flow-row">
+      <span class="node">Frontend request</span><span class="arrow">→</span>
+      <span class="node">Backend API (Node.js / Flask)</span><span class="arrow">→</span>
+      <span class="node hl">AI / ML engine</span><span class="arrow">→</span>
+      <span class="node">Feature store (embeddings + interactions)</span><span class="arrow">→</span>
+      <span class="node">Ranked response</span>
+    </div>
+    <div class="comp-grid">
+      <div class="comp"><h4>Recommendation service</h4><p>Wraps the hybrid model; called by <code>/recommend</code> on every dashboard load.</p></div>
+      <div class="comp"><h4>Quality scoring service</h4><p>Aggregates ratings, download frequency, and engagement metrics into a single rank-able score.</p></div>
+      <div class="comp"><h4>NLP module</h4><p>Embeds incoming queries and performs nearest-neighbor lookup against note embeddings via FAISS.</p></div>
+      <div class="comp"><h4>Retraining job</h4><p>Runs daily or weekly on updated interaction data to keep the models current.</p></div>
+    </div>
+  </div>
+</section>
+
+<section class="reveal">
+  <div class="divider"><span class="idx">Tech stack</span><span class="rule"></span></div>
+  <div class="stack-grid">
+    <div class="stack-cell"><div class="layer">API framework</div><p>Node.js (Express) or Python (Flask) serving the REST endpoints above.</p></div>
+    <div class="stack-cell"><div class="layer">ML libraries</div><p>scikit-learn for classical models, TensorFlow / PyTorch for deep components.</p></div>
+    <div class="stack-cell"><div class="layer">NLP</div><p>Hugging Face Transformers with a Sentence-BERT / multilingual BERT checkpoint.</p></div>
+    <div class="stack-cell"><div class="layer">Vector search</div><p>FAISS for fast nearest-neighbor lookup over note embeddings.</p></div>
+    <div class="stack-cell"><div class="layer">DevOps</div><p>Git/GitHub for version control, Postman for endpoint testing, Docker for containerized deployment.</p></div>
+  </div>
+</section>
+
+<footer class="conclusion">
+  <div class="conclusion-inner">
+    <div class="eyebrow sage">Next layer</div>
+    <h2 style="margin-top:1rem;">Every embedding and interaction the engine uses has to <em>live</em> somewhere.</h2>
+    <p>See the schema, the feature store, and the vector database behind it.</p>
+  </div>
+</footer>
+<div class="site-footer">
+  <div><a href="index.html">Home</a><a href="frontend.html">Frontend</a><a href="database.html">Database</a><a href="roadmap.html">Roadmap</a><a href="team.html">Team</a></div>
+  <div>K.R. Mangalam University — Empowering the Youth; Empowering the Nation</div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

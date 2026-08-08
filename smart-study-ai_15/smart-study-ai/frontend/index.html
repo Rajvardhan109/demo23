@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI-Based Smart Study Recommendation System — K.R. Mangalam University</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="brand" href="index.html"><b>Smart Study AI</b></a>
+    <div class="tabs">
+
+    <a href="index.html">Home</a>
+    <a href="dashboard.html">Dashboard</a>
+    <a href="upload.html">Upload Notes</a>
+    <a href="search.html">Smart Search</a>
+    <a href="recommendation.html">AI Recommendations</a>
+    <a href="team.html">Team</a>
+
+    
+    <a href="login.html">Logout</a>
+
+</div>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-body">
+      <div>
+        <div class="eyebrow">Department of Computer Science &amp; Engineering</div>
+        <h1 style="margin-top:0.8rem;">Notes stop being <em>lost</em>.<br>They start being <em>found</em>.</h1>
+        <p class="hero-sub">An AI recommendation layer for the Smart Notes Sharing System — turning a scattered archive of WhatsApp forwards into a catalog that learns each student's subject, pace, and gaps, and hands them the right note before they think to search for it.</p>
+        <div class="hero-meta">
+          <div>Team Leader<b>Rajvardhan Singh · 2501010132</b></div>
+          <div>Faculty Mentor<b>Mr. Love Porwal</b></div>
+          <div>Date<b>21 May 2026</b></div>
+        </div>
+        <div class="scroll-cue"><span class="ln"></span> Explore the proposal below</div>
+        
+        <!-- ADDED CTA BUTTON ACCORDING TO STEP 3 -->
+        <div style="margin-top:30px;">
+          <a href="login.html" class="primary-btn">
+            Get Started &rarr;
+          </a>
+        </div>
+
+      </div>
+      <div class="drawer" aria-hidden="true">
+        <div class="card raw"><span class="meta">WHATSAPP — 11:42 PM</span><div class="title">"does anyone have unit 3 notes???"</div><span class="meta">↳ 214 replies, buried by midnight</span></div>
+        <div class="card sorted"><span class="tag">Unit 3 · DSA</span><div class="title">Recursion &amp; Backtracking — full notes</div><span class="meta">Uploaded · rated 4.6/5</span></div>
+        <div class="card ai"><span class="tag">Recommended for you</span><div class="title">Matches your last 3 study sessions</div><span class="meta">Content + collaborative match</span></div>
+        <div class="card top"><span class="tag">Top rated</span><div class="title">Quality score 92 · 340 downloads</div><span class="meta">Auto-ranked this week</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ PROBLEM ============ -->
+<section class="reveal">
+  <div class="divider"><span class="idx">01 — Background</span><span class="rule"></span></div>
+  <div class="problem-grid">
+    <div>
+      <h2>Study material dies in chat history.</h2>
+      <ul class="fail-list">
+        <li><b>Buried within hours</b> — notes sink under new messages in the same thread they were shared in.</li>
+        <li><b>No structure</b> — nothing is organized by subject, unit, or topic.</li>
+        <li><b>No quality signal</b> — a rushed photo of a whiteboard sits next to a properly typed summary, indistinguishable.</li>
+        <li><b>Unsearchable</b> — finding one file means scrolling past hundreds of irrelevant messages.</li>
+        <li><b>No metadata</b> — downloaded files pile up in a folder with names like <i>IMG_2041.jpg</i>.</li>
+      </ul>
+    </div>
+    <div class="base-box">
+      <div class="eyebrow sage">Already built</div>
+      <h3 style="font-size:1.3rem; margin-top:0.6rem;">The Smart Notes Sharing System</h3>
+      <p>Our team's existing platform already solves the structural half of this problem: a centralized place to register, upload notes tagged by subject and unit, browse, search by keyword, download, and rate. What it doesn't do yet is <i>think</i> — that's what the three layers on this site add.</p>
+      <div class="chip-row">
+        <span class="chip">/register</span><span class="chip">/login</span><span class="chip">/upload-note</span><span class="chip">/get-notes</span><span class="chip">MongoDB / MySQL</span><span class="chip">Firebase Storage</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PAGE NAV GRID ============ -->
+<section class="reveal">
+  <div class="divider"><span class="idx">02 — The build, layer by layer</span><span class="rule"></span></div>
+  <h2 style="font-size:1.9rem; max-width:32ch;">Three layers do the work. Each gets its own page.</h2>
+  <div class="pagenav-grid">
+    <a class="pagenav-card" href="frontend.html">
+      <span class="tag">Client side</span>
+      <h3>Frontend</h3>
+      <p>The dashboard students actually use — Recommended Notes, NLP search bar, Study Path view, and the React component layer behind them.</p>
+      <span class="go">View frontend →</span>
+    </a>
+    <a class="pagenav-card" href="backend.html">
+      <span class="tag">Server + AI/ML</span>
+      <h3>Backend &amp; AI Engine</h3>
+      <p>REST API endpoints, the hybrid recommendation engine, quality scoring, and the NLP search module that powers it all.</p>
+      <span class="go">View backend →</span>
+    </a>
+    <a class="pagenav-card" href="database.html">
+      <span class="tag">Data layer</span>
+      <h3>Database &amp; Storage</h3>
+      <p>Schema design, the feature store, vector search over note embeddings, and how raw files stay in Firebase.</p>
+      <span class="go">View database →</span>
+    </a>
+  </div>
+  <div class="pagenav-grid" style="margin-top:1.4rem;">
+    <a class="pagenav-card" href="roadmap.html">
+      <span class="tag">Plan</span>
+      <h3>Timeline &amp; Roadmap</h3>
+      <p>The 12-week build schedule, expected outcomes, and what's in scope now versus what comes next.</p>
+      <span class="go">View roadmap →</span>
+    </a>
+    <a class="pagenav-card" href="team.html">
+      <span class="tag">People</span>
+      <h3>Team</h3>
+      <p>Who's building it, their roles, sections, and contact details, plus our faculty mentor.</p>
+      <span class="go">View team →</span>
+    </a>
+  </div>
+</section>
+
+<!-- ============ OBJECTIVES ============ -->
+<section class="reveal">
+  <div class="divider"><span class="idx">03 — Objectives</span><span class="rule"></span></div>
+  <h2 style="font-size:1.9rem;">What this extension is built to achieve</h2>
+  <div class="obj-list">
+    <div class="obj-item"><span class="num">01</span><div><h3>Centralized intelligence</h3><p>Add a recommendation layer on top of the existing platform that actively guides students to relevant material.</p></div></div>
+    <div class="obj-item"><span class="num">02</span><div><h3>Personalization at scale</h3><p>Individualized suggestions for hundreds of concurrent users based on their unique learning profile.</p></div></div>
+    <div class="obj-item"><span class="num">03</span><div><h3>Quality amplification</h3><p>Automatically surface the strongest notes and cut down the manual effort of judging what's worth reading.</p></div></div>
+    <div class="obj-item"><span class="num">04</span><div><h3>NLP-powered search</h3><p>Replace keyword matching with natural-language understanding, in plain English or Hindi.</p></div></div>
+    <div class="obj-item"><span class="num">05</span><div><h3>Study path optimization</h3><p>Guide students through a logical topic progression instead of leaving them to navigate at random.</p></div></div>
+    <div class="obj-item"><span class="num">06</span><div><h3>Engagement &amp; retention</h3><p>Reduce academic stress through proactive, well-timed suggestions rather than passive storage.</p></div></div>
+    <div class="obj-item"><span class="num">07</span><div><h3>Scalability</h3><p>Design the AI layer to grow from a single department to the entire university ecosystem.</p></div></div>
+  </div>
+</section>
+
+<footer class="conclusion">
+  <div class="conclusion-inner">
+    <div class="eyebrow amber">Conclusion</div>
+    <h2 style="margin-top:1rem;">The base system fixed <em>storage</em>. This fixes <em>discovery</em>.</h2>
+    <p>Grounded in real student pain points at K.R. Mangalam University and built on a working platform, this AI layer is practical within an academic semester and scalable to the whole institution.</p>
+  </div>
+</footer>
+<div class="site-footer">
+  <div><a href="frontend.html">Frontend</a><a href="backend.html">Backend</a><a href="database.html">Database</a><a href="roadmap.html">Roadmap</a><a href="team.html">Team</a></div>
+  <div>K.R. Mangalam University — Empowering the Youth; Empowering the Nation</div>
+</div>
+
+<script>
+      // Point this at your deployed backend (see backend/README or MIGRATION_NOTES.md).
+      // Defaults to localhost:4000 for local development if left unset.
+      // window.SSAI_API_BASE = 'https://your-backend-url.onrender.com/api';
+    </script>
+    <script src="data.js"></script>
+<script src="script.js"></script>
+</body>
+</html>

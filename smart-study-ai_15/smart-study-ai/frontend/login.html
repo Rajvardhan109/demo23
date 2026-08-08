@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Smart Study AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script>
+      // TODO: replace with your real OAuth Client ID from Google Cloud Console
+      // (APIs & Services → Credentials → OAuth 2.0 Client IDs → Web application).
+      window.SSAI_GOOGLE_CLIENT_ID = '88744870818-jbpna14tlnirqhpjpksc3tsa142qr4eo.apps.googleusercontent.com';
+    </script>
+</head>
+
+<body>
+
+<nav class="topnav">
+    <div class="topnav-inner">
+        <a class="brand" href="index.html"><b>Smart Study AI</b></a>
+
+        <div class="tabs">
+            <a href="index.html">HOME</a>
+            <a href="dashboard.html">DASHBOARD</a>
+            <a href="upload.html">UPLOAD NOTES</a>
+            <a href="search.html">SMART SEARCH</a>
+            <a href="recommendation.html">AI RECOMMENDATIONS</a>
+            <a href="team.html">TEAM</a>
+
+            <button id="themeToggle" class="theme-btn" type="button">
+        <span id="themeIcon">🌙</span> <span id="themeText">Dark Mode</span>
+    </button>
+
+
+            <a href="login.html">Sign in</a>
+        </div>
+    </div>
+</nav>
+
+<header class="page-hero">
+    <span class="eyebrow amber">Authentication</span>
+
+    <h1 style="margin-top:14px;">
+        Welcome <em>Back</em>.
+    </h1>
+
+    <p>
+        Continue your Smart Study journey by signing into your account.
+        Access your notes, AI recommendations and learning dashboard.
+    </p>
+</header>
+
+<section class="login-section">
+
+    <div class="login-card">
+
+        <span class="eyebrow sage" id="loginEyebrow">Sign In</span>
+
+        <h2>Sign In</h2>
+
+        <div class="role-select" id="roleSelect">
+            <div class="role-btn active" data-role="student">Student</div>
+            <div class="role-btn" data-role="faculty">Faculty</div>
+            <div class="role-btn" data-role="admin">Admin</div>
+        </div>
+
+        <div class="form-msg" id="loginMsg"></div>
+
+        <div class="google-signin-wrap" id="googleSignInDiv"></div>
+        <div class="auth-divider">or continue with email</div>
+
+        <form id="loginForm">
+
+            <label>Email Address</label>
+            <input
+                type="email"
+                id="loginEmail"
+                placeholder="Enter your university email"
+                required
+            >
+
+            <label>Password</label>
+            <input
+                type="password"
+                id="loginPassword"
+                placeholder="Enter password"
+                required
+            >
+
+            <div class="login-options">
+
+                <label class="remember">
+                    <input type="checkbox">
+                    Remember Me
+                </label>
+
+                <a href="forgot-password.html">Forgot Password?</a>
+
+            </div>
+
+            <button type="submit" class="primary-btn">
+                Sign In
+            </button>
+
+        </form>
+
+        <p class="signup-link" style="margin-top: 24px; text-align: center; font-size: 0.95rem;">
+            Don't have an account? <a href="signup.html" style="font-weight: 600; text-decoration: underline;">Create Account &rarr;</a>
+        </p>
+
+    </div>
+
+</section>
+
+<script>
+      // Point this at your deployed backend (see backend/README or MIGRATION_NOTES.md).
+      // Defaults to localhost:4000 for local development if left unset.
+      // window.SSAI_API_BASE = 'https://your-backend-url.onrender.com/api';
+    </script>
+    <script src="data.js"></script>
+<script src="script.js"></script>
+<script>
+(function () {
+    var selectedRole = 'student';
+    var roleSelect = document.getElementById('roleSelect');
+    roleSelect.addEventListener('click', function (e) {
+        var btn = e.target.closest('.role-btn');
+        if (!btn) return;
+        roleSelect.querySelectorAll('.role-btn').forEach(function (b) { b.classList.remove('active'); });
+        btn.classList.add('active');
+        selectedRole = btn.getAttribute('data-role');
+    });
+
+    var msg = document.getElementById('loginMsg');
+    function showMsg(text, type) {
+        msg.textContent = text;
+        msg.className = 'form-msg show ' + type;
+    }
+
+    function goToDashboard(role) {
+        if (role === 'admin') window.location.href = 'admin-dashboard.html';
+        else if (role === 'faculty') window.location.href = 'faculty-dashboard.html';
+        else window.location.href = 'dashboard.html';
+    }
+
+    SSAIGoogle.init('googleSignInDiv', async function (profile) {
+        var result = await SSAI.loginWithGoogle(profile, selectedRole);
+        if (!result.ok) { showMsg(result.error, 'error'); return; }
+        showMsg((result.created ? 'Account created and signed in with Google!' : 'Signed in with Google!') + ' Redirecting…', 'success');
+        setTimeout(function () { goToDashboard(result.user.role); }, 500);
+    }, {
+        onError: function (text) { showMsg(text, 'error'); }
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        var email = document.getElementById('loginEmail').value;
+        var password = document.getElementById('loginPassword').value;
+        var result = await SSAI.login(email, password, selectedRole);
+        if (!result.ok) {
+            showMsg(result.error, 'error');
+            return;
+        }
+        if (result.user.role !== selectedRole) {
+            showMsg('This account is registered as "' + result.user.role + '". Redirecting you to the right dashboard…', 'success');
+        } else {
+            showMsg('Signed in! Redirecting…', 'success');
+        }
+        setTimeout(function () { goToDashboard(result.user.role); }, 500);
+    });
+})();
+</script>
+</body>
+
+<section class="help-section">
+
+    <div class="help-card">
+
+        <h2>Need Help?</h2>
+
+        <p>
+            Having trouble uploading your notes?
+            Read our Frequently Asked Questions.
+        </p>
+
+        <a href="faq.html" class="primary-btn">
+            Open FAQ
+        </a>
+
+    </div>
+
+</section>
+
+</html>

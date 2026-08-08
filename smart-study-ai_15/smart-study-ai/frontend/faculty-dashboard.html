@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard - Smart Study AI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,500&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav class="topnav">
+    <div class="topnav-inner">
+        <a class="brand" href="index.html"><b>Smart Study AI</b></a>
+        <div class="tabs">
+            <a href="index.html">Home</a>
+            <a href="faculty-dashboard.html">Faculty Dashboard</a>
+            <a href="search.html">Smart Search</a>
+            <a href="recommendation.html">AI Recommendations</a>
+            <a href="team.html">Team</a>
+            <a href="login.html">Logout</a>
+        </div>
+    </div>
+</nav>
+
+<header class="page-hero dashboard-hero">
+    <div class="hero-left">
+        <span class="eyebrow amber">Faculty Dashboard</span>
+        <h1>Welcome, <em data-user-name>Faculty</em>.</h1>
+        <p class="hero-subtitle">Review student uploads and keep the note catalog trustworthy before it reaches Smart Search and AI Recommendations.</p>
+    </div>
+    <div class="hero-right">
+        <div class="hero-stat"><span class="stat-number" id="statPending">0</span><span class="stat-label">Pending Review</span></div>
+        <div class="hero-stat"><span class="stat-number" id="statApproved">0</span><span class="stat-label">Approved Notes</span></div>
+        <div class="hero-stat"><span class="stat-number" id="statTotal">0</span><span class="stat-label">Total Notes</span></div>
+    </div>
+</header>
+
+<section class="dashboard-grid">
+
+    <article class="dashboard-card large-card" style="grid-column:1 / -1;">
+        <span class="eyebrow sage">Needs Action</span>
+        <h2>Pending Review</h2>
+        <p>Notes uploaded by students, awaiting approval before they appear in search and recommendations.</p>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Title</th><th>Subject</th><th>Uploaded By</th><th>Difficulty</th><th></th></tr></thead>
+                <tbody id="pendingTableBody"></tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="dashboard-card large-card" style="grid-column:1 / -1;">
+        <span class="eyebrow amber">Catalog</span>
+        <h2>All Notes</h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Title</th><th>Subject</th><th>Status</th><th>Downloads</th><th>Rating</th><th></th></tr></thead>
+                <tbody id="allNotesTableBody"></tbody>
+            </table>
+        </div>
+    </article>
+
+    <article class="dashboard-card large-card" style="grid-column:1 / -1;">
+        <span class="eyebrow sage">Insights</span>
+        <h2>Notes by Subject</h2>
+        <p>Where the catalog's coverage is strong, and where it's thin.</p>
+        <div class="subject-breakdown" id="subjectBreakdown"></div>
+    </article>
+
+    <article class="dashboard-card large-card" style="grid-column:1 / -1;">
+        <span class="eyebrow sage">Account</span>
+        <h2>Account Settings</h2>
+        <p>Update your display name or change your password. Leave the password fields blank to keep it unchanged.</p>
+        <div class="form-msg" id="accMsg"></div>
+        <form class="inline-form" id="accForm">
+            <div><label>Name</label><input type="text" id="accName" required></div>
+            <div><label>Current Password</label><input type="password" id="accCurrentPassword" placeholder="Only if changing password"></div>
+            <div><label>New Password</label><input type="password" id="accNewPassword" placeholder="Leave blank to keep current"></div>
+            <div><button type="submit" class="small-btn">Save Changes</button></div>
+        </form>
+    </article>
+
+</section>
+
+<script>
+      // Point this at your deployed backend (see backend/README or MIGRATION_NOTES.md).
+      // Defaults to localhost:4000 for local development if left unset.
+      // window.SSAI_API_BASE = 'https://your-backend-url.onrender.com/api';
+    </script>
+    <script src="data.js"></script>
+<script src="script.js"></script>
+<script src="chatbot.js"></script>
+<script>
+(function () {
+    var session = SSAI.requireRole(['faculty', 'admin']);
+    if (!session) return;
+
+    SSAIChatbot.init(session);
+
+    function icon(subject) {
+        if (/data structure|dsa|tree|graph/i.test(subject)) return '📘';
+        if (/database|dbms/i.test(subject)) return '🗄️';
+        if (/python/i.test(subject)) return '🐍';
+        return '📙';
+    }
+
+    async function render() {
+        var notes = await SSAI.getNotes();
+        var pending = notes.filter(function (n) { return n.status === 'pending'; });
+        var approved = notes.filter(function (n) { return n.status === 'approved'; });
+
+        document.getElementById('statPending').textContent = pending.length;
+        document.getElementById('statApproved').textContent = approved.length;
+        document.getElementById('statTotal').textContent = notes.length;
+
+        var pendingBody = document.getElementById('pendingTableBody');
+        pendingBody.innerHTML = pending.length ? pending.map(function (n) {
+            return '<tr><td class="fname">' + icon(n.subject) + ' ' + n.title + (n.hasFile ? ' <span class="file-chip attached" style="margin:0 0 0 6px;">📎 PDF</span>' : '') + '</td><td>' + n.subject + '</td><td>' + n.uploadedByName + '</td><td>' + n.difficulty + '</td>' +
+                '<td><button class="small-btn" data-open-id="' + n.id + '">Preview</button> <button class="small-btn" data-approve="' + n.id + '">Approve</button><button class="danger-btn" data-reject="' + n.id + '">Reject</button></td></tr>';
+        }).join('') : '<tr><td colspan="5">No notes waiting for review right now.</td></tr>';
+
+        var allBody = document.getElementById('allNotesTableBody');
+        allBody.innerHTML = notes.length ? notes.map(function (n) {
+            var avg = SSAI.ratingAvg(n);
+            return '<tr><td class="fname">' + icon(n.subject) + ' ' + n.title + '</td><td>' + n.subject + '</td>' +
+                '<td><span class="status-badge ' + n.status + '">' + n.status + '</span>' + (n.status === 'rejected' && n.facultyFeedback ? '<div class="feedback-note">' + n.facultyFeedback + '</div>' : '') + '</td>' +
+                '<td>' + n.downloads + '</td><td>' + (avg ? avg.toFixed(1) + '/5' : '—') + '</td>' +
+                '<td><button class="small-btn" data-open-id="' + n.id + '">Preview</button> <button class="danger-btn" data-delete="' + n.id + '">Delete</button></td></tr>';
+        }).join('') : '<tr><td colspan="6">No notes uploaded yet.</td></tr>';
+
+        SSAIUI.wireCardEvents(pendingBody, session);
+        SSAIUI.wireCardEvents(allBody, session);
+
+        pendingBody.querySelectorAll('[data-approve]').forEach(function (b) {
+            b.addEventListener('click', async function () { await SSAI.approveNote(b.getAttribute('data-approve'), 'approved'); render(); });
+        });
+        pendingBody.querySelectorAll('[data-reject]').forEach(function (b) {
+            b.addEventListener('click', async function () {
+                var reason = prompt('Optional: add a short note to the student on why this was rejected.', '');
+                if (reason === null) return;
+                await SSAI.approveNote(b.getAttribute('data-reject'), 'rejected', reason.trim());
+                render();
+            });
+        });
+        allBody.querySelectorAll('[data-delete]').forEach(function (b) {
+            b.addEventListener('click', async function () {
+                if (confirm('Delete this note permanently?')) { await SSAI.deleteNote(b.getAttribute('data-delete')); render(); }
+            });
+        });
+
+        renderSubjectBreakdown(notes);
+    }
+
+    function renderSubjectBreakdown(notes) {
+        var counts = {};
+        notes.forEach(function (n) { counts[n.subject] = (counts[n.subject] || 0) + 1; });
+        var max = Math.max.apply(null, Object.values(counts).concat([1]));
+        var wrap = document.getElementById('subjectBreakdown');
+        var subjects = Object.keys(counts).sort(function (a, b) { return counts[b] - counts[a]; });
+        wrap.innerHTML = subjects.length ? subjects.map(function (s) {
+            return '<div class="subject-breakdown-row"><span class="sname">' + s + '</span>' +
+                '<span class="sbar"><span class="sbar-fill" style="width:' + Math.round((counts[s] / max) * 100) + '%;"></span></span>' +
+                '<span class="scount">' + counts[s] + '</span></div>';
+        }).join('') : '<p class="empty-state">No notes uploaded yet.</p>';
+    }
+
+    render();
+
+    document.getElementById('accName').value = session.name;
+    SSAIUI.wireAccountForm(document.getElementById('accForm'), document.getElementById('accMsg'), session);
+})();
+</script>
+
+</body>
+</html>
